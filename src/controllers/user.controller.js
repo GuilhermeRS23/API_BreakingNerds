@@ -1,4 +1,4 @@
-const userService = require('../services/User.service');
+import userService from '../services/User.service.js';
 
 const create = async (req, res) => {
     try {
@@ -83,9 +83,4 @@ const update = async (req, res) => {
     }
 };
 
-module.exports = {
-    create,
-    findAllUsers,
-    findByID,
-    update
-};
+export default{ create, findAllUsers, findByID, update}

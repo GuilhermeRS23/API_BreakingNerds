@@ -1,4 +1,4 @@
-const User = require("../models/User");
+import User from  "../models/User.js";
 
 //Function enline
 const createService = (body) => User.create(body);
@@ -9,7 +9,7 @@ const updateService = (id, nome, username, email, password, avatar, background) 
         id, nome, username, email, password, avatar, background
     });
 
-module.exports = {
+export default {
     createService,
     findAllService,
     findByIdService,
