@@ -1,9 +1,11 @@
 import express from 'express';
 import userRoute from './src/routes/user.router.js';
 import connetcDatabase from "./src/database/db.js";
+import dotenv from 'dotenv';
+dotenv.config();
 
 const app = express()
-const port = 3000
+const port = process.env.PORT || 3000;
 
 connetcDatabase();
 app.use(express.json());
