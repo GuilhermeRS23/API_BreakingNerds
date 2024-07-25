@@ -37,7 +37,7 @@ const findAllUsers = async (req, res) => {
 
         if (users.length === 0) {
             return res.status(400)
-                .send({ message: "Todos usuários registrados" })
+                .send({ message: "Nenhum usuário cadastrado" });
         }
         res.send(users)
     } catch (error) {
