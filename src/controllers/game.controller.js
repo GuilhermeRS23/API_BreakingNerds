@@ -2,6 +2,26 @@ import gameService from "../services/game.service.js";
 
 const createGame = async (req, res) => {
     try {
+        //Middleware 
+        const { authorization } = req.headers;
+
+        if (!authorization) {
+            res.status(401)
+                .send({ message: "Rota não autorizada" })
+        };
+
+        const parts = authorization.split(' ');
+        if (parts.length !== 2) {
+            return res.status(401)
+                .send({ message: "Authorization inválido 1" })
+        }
+
+        const [schema, token] = parts;
+        if (schema !== "Bearer") {
+            return res.status(401)
+                .send({ message: "Authorization inválido" })
+        }
+
         const { title, description, cover } = req.body;
 
         if (!title || !description || !cover) {
