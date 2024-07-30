@@ -9,5 +9,7 @@ const findAllService = (offset, limit) => Games.find()
 
 const countGames = () => Games.countDocuments();
 
-export default { createService, findAllService, countGames };
+const topGameService = () => Games.findOne().sort({ _id: -1 }).populate("User");
+
+export default { createService, findAllService, countGames, topGameService };
 

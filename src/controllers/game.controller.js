@@ -26,7 +26,7 @@ const createGame = async (req, res) => {
 
 const findAllGames = async (req, res) => {
     try {
-        let {limit, offset} = req.query;
+        let { limit, offset } = req.query;
         limit = Number(limit);
         offset = Number(offset);
 
@@ -67,8 +67,8 @@ const findAllGames = async (req, res) => {
                 likes: game.likes,
                 comments: game.comments,
                 name: game.User.name,
-                userName: game.User.userName,
-                userAvatar: game.User.userAvatar,
+                userName: game.User.username,
+                userAvatar: game.User.avatar
             }))
         });
 
@@ -77,4 +77,34 @@ const findAllGames = async (req, res) => {
     }
 };
 
-export default { createGame, findAllGames };
+const topGame = async (req, res) => {
+    try {
+        const games = await gameService.topGameService();
+
+        if (!games) {
+            return res.status(400)
+                .send({ message: "Nenhum jogo registrado" })
+        }
+
+        res.send({
+            games: {
+                id: games._id,
+                title: games.title,
+                description: games.description,
+                cover: games.cover,
+                likes: games.likes,
+                comments: games.comments,
+                name: games.User.name,
+                userName: games.User.username,
+                userAvatar: games.User.avatar
+            }
+        });
+        console.log(games.User);
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+
+};
+
+export default { createGame, findAllGames, topGame };

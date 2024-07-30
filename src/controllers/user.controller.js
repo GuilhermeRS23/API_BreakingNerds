@@ -2,9 +2,9 @@ import userService from '../services/user.service.js';
 
 const create = async (req, res) => {
     try {
-        const { nome, username, email, password, avatar, background } = req.body;
+        const { name, username, email, password, avatar, background } = req.body;
 
-        if (!nome || !username || !email || !password || !avatar || !background) {
+        if (!name || !username || !email || !password || !avatar || !background) {
             res.status(400)
                 .send({ message: "Falha ao enviar os dados! Verificar todos os campos." })
         }
@@ -19,7 +19,7 @@ const create = async (req, res) => {
             message: "Usuário criado com sucesso!",
             user: {
                 id: user._id,
-                nome,
+                name,
                 username,
                 email,
                 avatar,
@@ -58,9 +58,9 @@ const findByID = async (req, res) => {
 
 const update = async (req, res) => {
     try {
-        const { nome, username, email, password, avatar, background } = req.body;
+        const { name, username, email, password, avatar, background } = req.body;
 
-        if (!nome && !username && !email && !password && !avatar && !background) {
+        if (!name && !username && !email && !password && !avatar && !background) {
             res.status(400)
                 .send({ message: "Falha ao enviar ao atualizar os dados! Alterar pelo menos alguns campo" })
         }
@@ -69,7 +69,7 @@ const update = async (req, res) => {
 
         await userService.updateService(
             id,
-            nome,
+            name,
             username,
             email,
             password,
