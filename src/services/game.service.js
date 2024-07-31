@@ -1,15 +1,15 @@
 import Games from "../models/Games.js";
 
-const createService = (body) => Games.create(body);
-const findAllService = (offset, limit) => Games.find()
+export const createService = (body) => Games.create(body);
+
+export const findAllService = (offset, limit) => Games.find()
     .sort({ _id: -1 })
     .skip(offset)
     .limit(limit)
     .populate("User");
 
-const countGames = () => Games.countDocuments();
+export const countGamesService = () => Games.countDocuments();
 
-const topGameService = () => Games.findOne().sort({ _id: -1 }).populate("User");
+export const topGameService = () => Games.findOne().sort({ _id: -1 }).populate("User");
 
-export default { createService, findAllService, countGames, topGameService };
-
+export const findByIdService = (id) => Games.findById(id).populate("User");

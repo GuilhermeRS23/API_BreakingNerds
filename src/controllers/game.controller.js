@@ -1,6 +1,6 @@
-import gameService from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService } from "../services/game.service.js";
 
-const createGame = async (req, res) => {
+export const createGame = async (req, res) => {
     try {
         const { title, description, cover } = req.body;
 
@@ -9,7 +9,7 @@ const createGame = async (req, res) => {
                 .send({ message: "Falha ao enviar os dados! Verificar todos os campos." })
         }
 
-        await gameService.createService({
+        await createService({
             title,
             description,
             cover,
@@ -24,7 +24,7 @@ const createGame = async (req, res) => {
     }
 };
 
-const findAllGames = async (req, res) => {
+export const findAllGames = async (req, res) => {
     try {
         let { limit, offset } = req.query;
         limit = Number(limit);
@@ -37,8 +37,8 @@ const findAllGames = async (req, res) => {
             offset = 0
         }
 
-        const games = await gameService.findAllService(offset, limit);
-        const total = await gameService.countGames();
+        const games = await findAllService(offset, limit);
+        const total = await countGamesService();
         const currentUrl = req.baseUrl;
 
         const nextGames = offset + limit;
@@ -77,29 +77,28 @@ const findAllGames = async (req, res) => {
     }
 };
 
-const topGame = async (req, res) => {
+export const topGame = async (req, res) => {
     try {
-        const games = await gameService.topGameService();
+        const game = await topGameervice();
 
-        if (!games) {
+        if (!game) {
             return res.status(400)
                 .send({ message: "Nenhum jogo registrado" })
         }
 
         res.send({
-            games: {
-                id: games._id,
-                title: games.title,
-                description: games.description,
-                cover: games.cover,
-                likes: games.likes,
-                comments: games.comments,
-                name: games.User.name,
-                userName: games.User.username,
-                userAvatar: games.User.avatar
+            game: {
+                id: game._id,
+                title: game.title,
+                description: game.description,
+                cover: game.cover,
+                likes: game.likes,
+                comments: game.comments,
+                name: game.User.name,
+                userName: game.User.username,
+                userAvatar: game.User.avatar
             }
         });
-        console.log(games.User);
 
     } catch (error) {
         res.status(500).send({ message: error.message });
@@ -107,4 +106,27 @@ const topGame = async (req, res) => {
 
 };
 
-export default { createGame, findAllGames, topGame };
+export const findById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const game = await findByIdService(id);
+
+        return res.send({
+            game: {
+                id: game._id,
+                title: game.title,
+                description: game.description,
+                cover: game.cover,
+                likes: game.likes,
+                comments: game.comments,
+                name: game.User.name,
+                userName: game.User.username,
+                userAvatar: game.User.avatar
+            }
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
