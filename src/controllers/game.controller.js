@@ -1,4 +1,4 @@
-import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService } from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService } from "../services/game.service.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -140,6 +140,30 @@ export const searchByTitle = async (req, res) => {
             return res.status(400)
                 .send({ message: `Nenhum registro encontrado para o termo ${title}` });
         }
+
+        res.send({
+            results: games.map((game) => ({
+                id: game._id,
+                title: game.title,
+                description: game.description,
+                cover: game.cover,
+                likes: game.likes,
+                comments: game.comments,
+                name: game.User.name,
+                userName: game.User.username,
+                userAvatar: game.User.avatar
+            }))
+        });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export const searchByUser = async (req, res) => {
+    try {
+        const id = req.userId;
+        const games = await searchByUserService(id);
 
         res.send({
             results: games.map((game) => ({

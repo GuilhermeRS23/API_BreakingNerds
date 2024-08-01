@@ -18,3 +18,6 @@ export const searchByTitleService = (title) => Games.find({
     title: { $regex: `${title || ""}`, $options: "i" }
 })
     .sort({ _id: -1 }).populate("User");
+
+export const searchByUserService = (id) =>
+    Games.find({ User: id }).sort({ _id: -1 }).populate("User");
