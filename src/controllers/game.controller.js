@@ -1,11 +1,11 @@
-import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService } from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService } from "../services/game.service.js";
 
 export const createGame = async (req, res) => {
     try {
         const { title, description, cover } = req.body;
 
         if (!title || !description || !cover) {
-            res.status(400)
+            return res.status(400)
                 .send({ message: "Falha ao enviar os dados! Verificar todos os campos." })
         }
 
@@ -178,6 +178,30 @@ export const searchByUser = async (req, res) => {
                 userAvatar: game.User.avatar
             }))
         });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export const updateGame = async (req, res) => {
+    try {
+        const { title, description, cover } = req.body;
+        const { id } = req.params;
+        //Middleware
+        if (!title && !description && !cover) {
+            return res.status(400)
+                .send({ message: "Falha ao enviar os dados! Informe pelo menos um campos." })
+        }
+
+        const games = await findByIdService(id);
+        if (String(games.User._id) !== req.userId) {
+            return res.status(400)
+                .send({ message: "Você não pode altualizar essa postagem" })
+        }
+
+        await updateGameService(id, title, description, cover);
+        res.send({ message: "Postagem atualizada com sucesso!" });
 
     } catch (error) {
         res.status(500).send({ message: error.message });

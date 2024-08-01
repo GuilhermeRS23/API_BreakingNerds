@@ -21,3 +21,10 @@ export const searchByTitleService = (title) => Games.find({
 
 export const searchByUserService = (id) =>
     Games.find({ User: id }).sort({ _id: -1 }).populate("User");
+
+export const updateGameService = (id, title, description, cover) =>
+    Games.findOneAndUpdate(
+        { _id: id },
+        { title, description, cover },
+        { rawResult: true }
+    );
