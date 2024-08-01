@@ -13,3 +13,8 @@ export const countGamesService = () => Games.countDocuments();
 export const topGameService = () => Games.findOne().sort({ _id: -1 }).populate("User");
 
 export const findByIdService = (id) => Games.findById(id).populate("User");
+
+export const searchByTitleService = (title) => Games.find({
+    title: { $regex: `${title || ""}`, $options: "i" }
+})
+    .sort({ _id: -1 }).populate("User");
