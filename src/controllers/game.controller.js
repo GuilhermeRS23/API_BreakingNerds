@@ -1,4 +1,4 @@
-import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService } from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService, deleteGameService } from "../services/game.service.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -111,6 +111,10 @@ export const findById = async (req, res) => {
         const { id } = req.params;
 
         const game = await findByIdService(id);
+        if (!game) {
+            return res.status(404)
+                .send({ message: "Game não encontrado ou excluido" })
+        }
 
         return res.send({
             game: {
@@ -187,21 +191,41 @@ export const searchByUser = async (req, res) => {
 export const updateGame = async (req, res) => {
     try {
         const { title, description, cover } = req.body;
-        const { id } = req.params;
-        //Middleware
+        
         if (!title && !description && !cover) {
             return res.status(400)
-                .send({ message: "Falha ao enviar os dados! Informe pelo menos um campos." })
+            .send({ message: "Falha ao enviar os dados! Informe pelo menos um campos." })
         }
+        
+        const { id } = req.params;
 
         const games = await findByIdService(id);
         if (String(games.User._id) !== req.userId) {
             return res.status(400)
-                .send({ message: "Você não pode altualizar essa postagem" })
+                .send({ message: "Você não pode alterar ou excluir essa postagem" })
         }
 
         await updateGameService(id, title, description, cover);
         res.send({ message: "Postagem atualizada com sucesso!" });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export const deleteGame = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        const games = await findByIdService(id);
+
+        if (String(games.User._id) !== req.userId) {
+            return res.status(400)
+                .send({ message: "Você não pode altualizar essa postagem" })
+        }
+        
+        await deleteGameService(id);
+        res.send({ message: "Postagem deletada com sucesso!" });
 
     } catch (error) {
         res.status(500).send({ message: error.message });

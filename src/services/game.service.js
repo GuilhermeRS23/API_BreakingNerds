@@ -28,3 +28,5 @@ export const updateGameService = (id, title, description, cover) =>
         { title, description, cover },
         { rawResult: true }
     );
+
+export const deleteGameService = (id) => Games.findByIdAndDelete({ _id: id });
