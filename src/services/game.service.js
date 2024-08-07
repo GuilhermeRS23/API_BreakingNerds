@@ -1,4 +1,6 @@
+import { text } from "express";
 import Games from "../models/Games.js";
+import { v4 as uuidv4 } from 'uuid';
 
 export const createService = (body) => Games.create(body);
 
@@ -42,3 +44,22 @@ export const deleteLikeGameService = (idGame, userId) =>
         { _id: idGame },
         { $pull: { likes: { userId } } }
     );
+
+export const addCommentService = (idGame, comment, userId) => {
+    const idComment = uuidv4();
+
+    return Games.findOneAndUpdate(
+        { _id: idGame },
+        {
+            $push: {
+                comments: { idComment, userId, comment, createAt: new Date() }
+            }
+        }
+    )
+};
+
+export const deleteCommentService = (idGame, idComment, userId) =>
+    Games.findOneAndUpdate(
+        { _id: idGame }, { $pull: { comments: { idComment, userId } } }
+    );
+    

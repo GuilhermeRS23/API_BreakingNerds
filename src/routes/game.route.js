@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { authMiddleware } from "../middlewares/auth.middleware.js";
-import { createGame, findAllGames, findById, topGame, searchByTitle, searchByUser, updateGame, deleteGame, likeGame } from "../controllers/game.controller.js"
+import { createGame, findAllGames, findById, topGame, searchByTitle, searchByUser, updateGame, deleteGame, likeGame, addComment, deleteComment } from "../controllers/game.controller.js"
 
 const router = Router();
 
@@ -14,6 +14,8 @@ router.get('/:id', authMiddleware, findById);
 
 router.patch("/:id", authMiddleware, updateGame);
 router.patch("/like/:id", authMiddleware, likeGame);
+router.patch("/comment/:id", authMiddleware, addComment);
+router.patch("/comment/:idGame/:idComment", authMiddleware, deleteComment);
 
 router.delete("/:id", authMiddleware, deleteGame);
 

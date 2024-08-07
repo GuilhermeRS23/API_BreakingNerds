@@ -1,4 +1,4 @@
-import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService, deleteGameService, likeGameService, deleteLikeGameService } from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService, deleteGameService, likeGameService, deleteLikeGameService, addCommentService, deleteCommentService } from "../services/game.service.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -248,3 +248,53 @@ export const likeGame = async (req, res) => {
         res.status(500).send({ message: error.message });
     }
 };
+
+export const addComment = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.userId;
+        const { comment } = req.body;
+
+        if (!comment) {
+            return res.status(400)
+                .send({ message: "Não é permitido enviar o campo de comentários vazio." })
+        };
+
+        await addCommentService(id, comment, userId);
+
+        res.send({ message: "Comentário adicionado com sucesso!" });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+export const deleteComment = async (req, res) => {
+    try {
+        const { idGame, idComment } = req.params;
+        const userId = req.userId;
+
+        const commentDeleted = await deleteCommentService(idGame, idComment, userId);
+
+        const commentFinder = commentDeleted.comments.find(
+            (comment) => comment.idComment === idComment
+        );
+
+        if (!commentFinder) {
+            return res.status(400)
+                .send({ message: "Comentário não encontrado ou excluido" });
+        }
+
+        if (commentFinder.userId !== userId) {
+            return res.status(400)
+                .send({ message: "Você não pode remover esse comentário" })
+        }
+
+        res.send({ message: "Comentário removido com sucesso!" });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+}
+
+//Erro exemplo  res.status(500).send({ message: error.message });
