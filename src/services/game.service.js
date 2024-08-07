@@ -30,3 +30,15 @@ export const updateGameService = (id, title, description, cover) =>
     );
 
 export const deleteGameService = (id) => Games.findByIdAndDelete({ _id: id });
+
+export const likeGameService = (idGame, userId) =>
+    Games.findOneAndUpdate(
+        { _id: idGame, "likes.userId": { $nin: [userId] } },
+        { $push: { likes: { userId, created: new Date() } } }
+    );
+
+export const deleteLikeGameService = (idGame, userId) =>
+    Games.findOneAndUpdate(
+        { _id: idGame },
+        { $pull: { likes: { userId } } }
+    );

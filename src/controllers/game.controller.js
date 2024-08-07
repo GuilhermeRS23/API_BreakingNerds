@@ -1,4 +1,4 @@
-import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService, deleteGameService } from "../services/game.service.js";
+import { createService, findAllService, topGameService, countGamesService, findByIdService, searchByTitleService, searchByUserService, updateGameService, deleteGameService, likeGameService, deleteLikeGameService } from "../services/game.service.js";
 
 export const createGame = async (req, res) => {
     try {
@@ -191,19 +191,19 @@ export const searchByUser = async (req, res) => {
 export const updateGame = async (req, res) => {
     try {
         const { title, description, cover } = req.body;
-        
+
         if (!title && !description && !cover) {
             return res.status(400)
-            .send({ message: "Falha ao enviar os dados! Informe pelo menos um campos." })
+                .send({ message: "Falha ao enviar os dados! Informe pelo menos um campos." })
         }
-        
+
         const { id } = req.params;
 
         const games = await findByIdService(id);
         if (String(games.User._id) !== req.userId) {
             return res.status(400)
-                .send({ message: "Você não pode alterar ou excluir essa postagem" })
-        }
+                .send({ message: "Você não pode alterar essa postagem" })
+        };
 
         await updateGameService(id, title, description, cover);
         res.send({ message: "Postagem atualizada com sucesso!" });
@@ -218,14 +218,31 @@ export const deleteGame = async (req, res) => {
         const { id } = req.params;
 
         const games = await findByIdService(id);
-
         if (String(games.User._id) !== req.userId) {
             return res.status(400)
-                .send({ message: "Você não pode altualizar essa postagem" })
-        }
-        
+                .send({ message: "Você não pode deletar essa postagem" })
+        };
+
         await deleteGameService(id);
         res.send({ message: "Postagem deletada com sucesso!" });
+
+    } catch (error) {
+        res.status(500).send({ message: error.message });
+    }
+};
+
+export const likeGame = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.userId;
+
+        const gamesLike = await likeGameService(id, userId);
+        if (!gamesLike) {
+            await deleteLikeGameService(id, userId);
+            return res.status(200).send({ message: "Like removido com sucesso!" });
+        }
+
+        res.send({ message: "Like adicionado com sucesso!" });
 
     } catch (error) {
         res.status(500).send({ message: error.message });
