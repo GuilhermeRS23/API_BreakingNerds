@@ -47,8 +47,10 @@ const findAllUsers = async (req, res) => {
 
 const findByID = async (req, res) => {
     try {
-        const id = req.id;
-        const user = req.user;
+        const user = await userService.findUserByIdService(
+            req.params.id,
+            req.userId
+        );
 
         res.send(user);
     } catch (error) {
@@ -83,4 +85,4 @@ const update = async (req, res) => {
     }
 };
 
-export default{ create, findAllUsers, findByID, update}
+export default { create, findAllUsers, findByID, update }

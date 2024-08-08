@@ -4,19 +4,19 @@ import { createGame, findAllGames, findById, topGame, searchByTitle, searchByUse
 
 const router = Router();
 
-router.post('/', authMiddleware, createGame);
+router.post('/create', authMiddleware, createGame);
 
 router.get('/', findAllGames);
 router.get('/top', topGame);
 router.get('/search', searchByTitle);
-router.get('/byUser', authMiddleware, searchByUser);
 router.get('/:id', authMiddleware, findById);
+router.get('/byUserId', authMiddleware, searchByUser);
 
-router.patch("/:id", authMiddleware, updateGame);
-router.patch("/like/:id", authMiddleware, likeGame);
-router.patch("/comment/:id", authMiddleware, addComment);
-router.patch("/comment/:idGame/:idComment", authMiddleware, deleteComment);
+router.patch("update/:id", authMiddleware, updateGame);
+router.patch("/:id/like", authMiddleware, likeGame);
+router.patch("/:id/comment", authMiddleware, addComment);
+router.patch("/:idGame/:idComment/comment", authMiddleware, deleteComment);
 
-router.delete("/:id", authMiddleware, deleteGame);
+router.delete("delete/:id", authMiddleware, deleteGame);
 
 export default router;

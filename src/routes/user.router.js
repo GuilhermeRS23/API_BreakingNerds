@@ -4,9 +4,9 @@ import userController from "../controllers/user.controller.js";
 
 const router = Router();
 
-router.post("/", userController.create);
+router.post("/create", userController.create);
 router.get("/", userController.findAllUsers);
 router.get("/:id", validId, validUser, userController.findByID);
-router.patch("/:id", validId, validUser, userController.update);
+router.patch("/update/:id", validId, validUser, userController.update);
 
 export default router;

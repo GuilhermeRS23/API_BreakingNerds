@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 import userService from "../services/user.service.js";
-import { findByIdService } from "../services/game.service.js";
 
 export const validId = (req, res, next) => {
     try {
@@ -19,7 +18,7 @@ export const validId = (req, res, next) => {
 
 export const validUser = async (req, res, next) => {
     try {
-        const id = req.params;
+        const { id } = req.params;
 
         const user = await userService.findByIdService(id);
 
